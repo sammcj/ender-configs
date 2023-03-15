@@ -1,0 +1,17 @@
+#!/usr/bin/env expect -f
+#  ./ssh.exp password 192.168.1.11 id
+# set pass [lrange $argv 0 0]
+# set server [lrange $argv 1 1]
+# set name [lrange $argv 2 2]
+
+# Note this is the default creality password, hence why I don't care that it's hardcoded in plain text
+set pass cxsw-sonic_2023
+set server klipper
+set name root
+
+spawn ssh $name@$server
+match_max 100000
+expect "*?assword:*"
+send -- "$pass\r"
+send -- "\r"
+interact
