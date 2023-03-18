@@ -22,7 +22,7 @@ KERNEL=="ttyUSB[0-9]*", SUBSYSTEM=="tty", ATTRS{idVendor}=="1a86", ATTRS{idProdu
 
 # Logitech Webcam 0/1 (c922/c920)- This is used to monitor the 3D printer
 SUBSYSTEM=="video4linux", ATTRS{serial}=="36D296DF", ATTR{index}=="0", SYMLINK+="cam_octoprint"
-SUBSYSTEM=="video4linux", ATTRS{serial}=="36D296DF", ATTR{index}=="0", RUN+="v4l2-ctl -d /dev/cam_octoprint--set-ctrl=power_line_frequency=1,focus_auto=0,focus_absolute=30"
+SUBSYSTEM=="video4linux", ATTRS{serial}=="36D296DF", ATTR{index}=="0", RUN+="v4l2-ctl -d /dev/cam_octoprint --set-ctrl=power_line_frequency=1,focus_auto=0,focus_absolute=30"
 
 SUBSYSTEM=="video4linux", ATTRS{serial}=="FB5BC4FF", ATTR{index}=="0", SYMLINK+="cam_octoprint"
-SUBSYSTEM=="video4linux", ATTRS{serial}=="FB5BC4FF", ATTR{index}=="0", RUN+="v4l2-ctl -d /dev/cam_octoprint--set-ctrl=power_line_frequency=1,focus_auto=0,focus_absolute=30"
+SUBSYSTEM=="video4linux", ATTRS{serial}=="FB5BC4FF", ATTR{index}=="0", RUN+="v4l2-ctl -d /dev/cam_octoprint --set-ctrl=power_line_frequency=1,focus_auto=0,focus_absolute=30"
