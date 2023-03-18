@@ -2,6 +2,10 @@
 
 My Documentation, Configuration, Scripts and notes for my Ender 5 S1 and Ender 3 v2 Neo printers.
 
+## Ender 5 S1
+
+- [ender-5-s1]](ender-5-s1/README.md)
+
 ## Ender 3 v2 Neo
 
 - [ender-3-v2-neo](ender-3-v2-neo/README.md)
