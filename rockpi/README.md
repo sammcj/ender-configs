@@ -13,13 +13,16 @@ source /etc/os-release
 sudo tee /etc/apt/sources.list.d/radxa.list <<< "deb [signed-by=/usr/share/keyrings/radxa-archive-keyring.gpg] https://radxa-repo.github.io/bullseye/ $VERSION_CODENAME main"
 sudo apt update
 
-apt install -y setserial irqtop borgmatic borgbackup firmware-brcm80211 hwinfo jq lshw usbutils v4l-utils zstd libzstd1 python3-zstd socat fzf aria2 nullmailer build-essential zlib1g-dev libncurses5-dev libgdbm-dev libnss3-dev libssl-dev libreadline-dev libffi-dev
+apt install -y setserial irqtop borgmatic borgbackup firmware-brcm80211 hwinfo jq lshw usbutils v4l-utils zstd libzstd1 python3-zstd socat fzf aria2 nullmailer build-essential zlib1g-dev libncurses5-dev libgdbm-dev libnss3-dev libssl-dev libreadline-dev libffi-dev gpiod virtualenv python3-dev python3-libgpiod liblmdb-d wget uvcdynctrl
 
 systemctl disable bluetooth.service vnstat.service console-getty.service wpa_supplicant.service
 systemctl enable nullmailer
 
+usermod -a -G tty octo
+usermod -a -G dialout octo
 
 touch $HOME/.hushlogin
+gpiodetect
 ```                                          1
 
 ### Nullmailer
@@ -28,11 +31,35 @@ touch $HOME/.hushlogin
 smtp.fastmail.com smtp --port=587 --starttls --user=user@fastmail.com --pass=password
 ```
 
-### Octoprint
+## Klipper
+
+Restore printer_data from backup.
+
+Follow <https://github.com/th33xitus/kiauh> install:
+
+- Mainsail
+- Klipper
+-
+
+- Stock controller: STM32F401 (stm32f401xc), 64K bootloader, USB
+- BTT Octopus:
+
+```shell
+# timelapse
+su - octo
+cd ~/
+git clone https://github.com/mainsail-crew/moonraker-timelapse.git --depth=1
+cd ~/moonraker-timelapse
+make install
+
+reboot
+```
 
 - OctoPrint install script <https://github.com/paukstelis/octoprint_install>
 - [octoprint.service](octoprint.service)
 - [ustreamer.service](ustreamer.service)
+
+Follow <https://www.klipper3d.org/RPi_microcontroller.html> to install the rpi mcu on the rockpi.
 
 ## Wifi Fix
 

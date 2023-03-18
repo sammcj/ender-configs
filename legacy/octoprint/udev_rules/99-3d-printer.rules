@@ -20,24 +20,9 @@ KERNEL=="ttyUSB[0-9]*", SUBSYSTEM=="tty", ATTRS{idVendor}=="1a86", ATTRS{idProdu
 # usb 3-6.1: Product: USB Serial
 # usb 3-6.1: ch341-uart converter now attached to ttyUSB1
 
-# Logitech Webcam 1 (c920)- This is used to monitor the 3D printer
-ACTION=="add|change", SUBSYSTEM=="video4linux", ENV{ID_VENDOR_ID}=="046d", RUN+="/opt/scripts/detect-webcam.sh"
-# Creates symlink to /dev/webcam1
-#ACTION=="add|change", SUBSYSTEM=="video4linux", ENV{ID_VENDOR_ID}=="046d", ENV{ID_MODEL_ID}=="082d", ATTRS{bcdDevice}=="0011", TEST!="v4l2-ctl -d '%E{DEVNAME}' --list-ctrls | grep -q '^$'", SYMLINK+="webcam1"
+# Logitech Webcam 0/1 (c922/c920)- This is used to monitor the 3D printer
+SUBSYSTEM=="video4linux", ATTRS{serial}=="36D296DF", ATTR{index}=="0", SYMLINK+="cam_octoprint"
+SUBSYSTEM=="video4linux", ATTRS{serial}=="36D296DF", ATTR{index}=="0", RUN+="v4l2-ctl -d /dev/cam_octoprint--set-ctrl=power_line_frequency=1,focus_auto=0,focus_absolute=30"
 
-# ACTION=="change", SUBSYSTEM=="video4linux", ENV{ID_VENDOR_ID}=="046d", ENV{ID_MODEL_ID}=="082d", ATTRS{bcdDevice}=="0011", TEST!="v4l2-ctl -d '%E{DEVNAME}' --list-ctrls | grep -q '^$'", SYMLINK+="webcam1", RUN="/usr/bin/docker restart motioneye"
-# usb 3-6.3: New USB device found, idVendor=046d, idProduct=082d, bcdDevice= 0.11
-# usb 3-6.3: New USB device strings: Mfr=0, Product=2, SerialNumber=1
-# usb 3-6.3: Product: HD Pro Webcam C920
-# usb 3-6.3: Found UVC 1.00 device HD Pro Webcam C920 (046d:082d)
-
-# Logitech Webcam 2 (c922)- This is used to monitor the 3D printer
-# Creates symlink to /dev/webcam2
-#ACTION=="add|change", SUBSYSTEM=="video4linux", ENV{ID_VENDOR_ID}=="046d", ENV{ID_MODEL_ID}=="085c", ATTRS{bcdDevice}=="0016", TEST!="v4l2-ctl -d '%E{DEVNAME}' --list-ctrls | grep -q '^$'", SYMLINK+="webcam2"
-# usb 3-10.3: new high-speed USB device number 7 using xhci_hcd
-# usb 3-10.3: New USB device found, idVendor=046d, idProduct=085c, bcdDevice= 0.16
-# usb 3-10.3: New USB device strings: Mfr=0, Product=2, SerialNumber=1
-# usb 3-10.3: Product: C922 Pro Stream Webcam
-# usb 3-10.3: SerialNumber: 36D296DF
-# usb 3-10.3: Found UVC 1.00 device C922 Pro Stream Webcam (046d:085c)
-# input: C922 Pro Stream Webcam as /devices/pci0000:00/0000:00:14.0/usb3/3-10/3-10.3/3-10.3:1.0/input/input27
+SUBSYSTEM=="video4linux", ATTRS{serial}=="FB5BC4FF", ATTR{index}=="0", SYMLINK+="cam_octoprint"
+SUBSYSTEM=="video4linux", ATTRS{serial}=="FB5BC4FF", ATTR{index}=="0", RUN+="v4l2-ctl -d /dev/cam_octoprint--set-ctrl=power_line_frequency=1,focus_auto=0,focus_absolute=30"
