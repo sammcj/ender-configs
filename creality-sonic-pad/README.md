@@ -6,7 +6,8 @@ cxsw-sonic_2023
 
 Dropbear SSH server is enabled by default, but doesn't support pubkey auth which is annoying.
 
-So I have a dodgy workaround using an expect script to login without entering the password each time: [login.exp](login.exp)
+So I have a dodgy workaround using an expect script to login without entering the password each time: [login.exp](login.exp).
+I alias this to a command to make it easier, e.g. `alias creality='${HOME}/git/ender-configs/creality-sonic-pad/login.exp'`
 
 ## Bypass new printer setup screen
 
