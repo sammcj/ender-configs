@@ -4,13 +4,21 @@ My Documentation, Configuration, Scripts and notes for my Ender 5 S1 and Ender 3
 
 ## Ender 5 S1
 
-- [ender-5-s1]](ender-5-s1/README.md)
+My new printer, mods are a work in progress.
+
+- [ender-5-s1](ender-5-s1/README.md)
 
 ## Ender 3 v2 Neo
 
 - [ender-3-v2-neo](ender-3-v2-neo/README.md)
 
+## Creality Sonic Pad
+
+- [creality-sonic-pad](creality-sonic-pad/README.md)
+
 ## RockPi 4 SE
+
+Used for running Klipper, Mainsail etc...
 
 - [rockpi](rockpi/README.md)
 
@@ -58,14 +66,14 @@ Output Options
 
 ### GCode scripts
 
-- See [klipper/cfg-macros](klipper/cfg-macros)
-- See [gcodes](gcodes) (old)
+- See [klipper/cfgs-macros](klipper/cfgs-macros)
+- See [legacy/gcodes](legacy/gcodes) (legacy)
 
 ## Failed print recovery
 
 I've created a GCODE template that can be used to recover/resume from a failed print.
 
-- See [gcodes/manual-print-recovery.gcode](gcodes/manual-print-recovery.gcode)
+- See [legacy/gcodes/manual-print-recovery.gcode](legacy/gcodes/manual-print-recovery.gcode) (legacy)
 
 ## Links
 

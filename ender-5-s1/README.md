@@ -11,6 +11,7 @@ My Documentation, Configuration, Scripts and notes for the Ender 5 S1 3d Printer
 ### Upgrades
 
 - ADXL345 accelerometer
+- Klipper
 
 ## Firmware
 
@@ -57,6 +58,16 @@ Recommended shaper is mzv @ 59.2 Hz
 ```
 
 ## Notes / Links
+
+### Controller board
+
+**Note: The Sprite Extruder / Pro kits have different breakout boards to the Ender 5 S1!**
+
+Below contains notes/reference only.
+
+- Sprite Extruder (Pro) pinout: <https://manuals.plus/creality/sprite-extruder-pro-kit-manual>
+
+Likely an updated version of the board found on the Ender 3 S1, but using the STM32F401RE instead of the STM32F401CC as found in the Ender-3 S1/Ender-3S1 Pro V2.4.S1 Silent MotherBoard
 
 - Marlin Firmware PR to add Ender 5 S1: <https://github.com/MarlinFirmware/Marlin/pull/25382/files>
   - See also <https://github.com/MarlinFirmware/Configurations/blob/import-2.1.x/config/examples/Creality/Ender-5%20S1/>
