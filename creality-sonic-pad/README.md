@@ -4,6 +4,10 @@ Factory default root password is:
 
 cxsw-sonic_2023
 
+Dropbear SSH server is enabled by default, but doesn't support pubkey auth which is annoying.
+
+So I have a dodgy workaround using an expect script to login without entering the password each time: [login.exp](login.exp)
+
 ## Bypass new printer setup screen
 
 Create a file called QtStorage.json in /mnt/UDISK
