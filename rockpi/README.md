@@ -44,8 +44,26 @@ Follow <https://github.com/th33xitus/kiauh> install:
 - Stock controller: STM32F401 (stm32f401xc), 64K bootloader, USB
 - BTT Octopus:
 
+## Backups
+
+- Whole OS: Borgmatic + Borgbase
+- Local: linux-timemachine
+
 ```shell
-# timelapse
+su - octo
+mkdir /home/octo/timemachine
+chmod 0700 /home/octo/timemachine
+git clone https://github.com/cytopia/linux-timemachine.git --depth=1
+cd linux-timemachine
+sudo make install
+sudo echo "0 9 * * * /usr/local/bin/timemachine -v /home/octo/printer_data/config /home/octo/timemachine" >> /var/spool/cron/crontabs/octo
+timemachine -v /home/octo/printer_data/config /home/octo/timemachine
+tree -aL 1 /home/octo/timemachine
+```
+
+## Timelapse
+
+```shell
 su - octo
 cd ~/
 git clone https://github.com/mainsail-crew/moonraker-timelapse.git --depth=1
