@@ -1,6 +1,6 @@
 # Rock Pi 4 SE
 
-Used as OctoPrint host
+Used as Klipper host
 
 ## Armbian
 
@@ -44,42 +44,63 @@ Follow <https://github.com/th33xitus/kiauh> install:
 - Stock controller: STM32F401 (stm32f401xc), 64K bootloader, USB
 - BTT Octopus:
 
-## Backups
+## ADXL345
 
-- Whole OS: Borgmatic + Borgbase
-- Local: linux-timemachine
+![](images/adxl345-rockpi4.png)
+
+- GND: 20 - [Grey -> Brown]
+- VCC: 17 - [Purple -> Red]
+- CS:  24 - [Orange]
+- SDO: 21 - [Yellow]
+- SDA: 19 - [Green]
+- SCL: 23 - [Blue]
+
+```plain
+cat /boot/armbianEnv.txt
+verbosity=1
+bootlogo=false
+overlay_prefix=rockchip
+fdtfile=rockchip/rk3399-rock-pi-4b.dtb
+rootdev=UUID=f2269554-755d-4013-9484-7c7525b6dbba
+rootfstype=ext4
+overlays=pcie-gen2 spi-spidev
+param_spidev_spi_bus=1
+usbstoragequirks=0x2537:0x1066:u,0x2537:0x1068:u
+```
 
 ```shell
+sysctl -w kernel.sched_rt_runtime_us=-1
+echo "kernel.sched_rt_runtime_us = -1" | sudo tee /etc/sysctl.d/10-disable-rt-group-limit.conf
+
 su - octo
-mkdir /home/octo/timemachine
-chmod 0700 /home/octo/timemachine
-git clone https://github.com/cytopia/linux-timemachine.git --depth=1
-cd linux-timemachine
-sudo make install
-sudo echo "0 9 * * * /usr/local/bin/timemachine -v /home/octo/printer_data/config /home/octo/timemachine" >> /var/spool/cron/crontabs/octo
-timemachine -v /home/octo/printer_data/config /home/octo/timemachine
-tree -aL 1 /home/octo/timemachine
-```
+~/klippy-env/bin/pip install numpy
+
+cd ~/klipper
+
+cd ~/klipper
+make menuconfig
+# select linux process
+sudo systemctl stop klipper
+make flash
+
+sudo cp ./scripts/klipper-mcu.service /etc/systemd/system/
+sudo systemctl enable klipper-mcu.service
 
 ## Timelapse
 
 ```shell
-su - octo
 cd ~/
 git clone https://github.com/mainsail-crew/moonraker-timelapse.git --depth=1
 cd ~/moonraker-timelapse
 make install
 
-reboot
 ```
-
-- OctoPrint install script <https://github.com/paukstelis/octoprint_install>
-- [octoprint.service](octoprint.service)
-- [ustreamer.service](ustreamer.service)
 
 Follow <https://www.klipper3d.org/RPi_microcontroller.html> to install the rpi mcu on the rockpi.
 
 ## Wifi Fix
+
+Note: Don't bother if you're not using wifi!
 
 Because Broadcom is terrible
 
@@ -141,44 +162,10 @@ Do flow rate test such as <https://www.thingiverse.com/thing:4810337>
 
 - E Steps: `405.9`
 
-## Python 3.11
-
-```shell
-wget https://www.python.org/ftp/python/3.11.2/Python-3.11.2.tgz
-tar -xzvf Python-3.11.2.tgz
-cd Python-3.11.2/
-
-apt install build-essential zlib1g-dev libncurses5-dev libgdbm-dev libnss3-dev libssl-dev libreadline-dev libffi-dev
-
-python3.9 -c "import sysconfig; print(sysconfig.get_config_var('CONFIG_ARGS'))"
-
-# ./configure --enable-optimizations # adding any other desired config options from above command, e.g:
-./configure '--enable-shared' '--enable-ipv6' '--enable-loadable-sqlite-extensions' '--with-dbmliborder=bdb:gdbm' '--with-computed-gotos' '--without-ensurepip' '--with-system-expat' '--with-system-libmpdec' '--with-system-ffi' 'CC=aarch64-linux-gnu-gcc' '--enable-optimizations'
-make -j `nproc`
-make altinstall
-
-update-alternatives --install /usr/bin/python3 python /usr/local/bin/python3.11 1 # OPTIONAL - only if you want to make it the default python
-python -V
-python3.11 -c "import sysconfig; print(sysconfig.get_config_var('CONFIG_ARGS'))" # just to confirm the build configuration was correctly applied
-
-python -m ensurepip --upgrade
-python -m pip install --upgrade pip
-
-python3 -m venv /home/octo/OctoPrint
-
-/home/octo/OctoPrint/bin/pip install --upgrade pip wheel OctoPrint
-```
-
 ## Klipper
 
-Note: This has not been used / tested yet.
-
-TODO: haproxy may need to be uninstalled or at least reconfigured.
-
-The Klipper install-debian.sh (./klipper/scripts/install-debian.sh) seems to be for an older version of Debian.
-
 ```shell
-apt install -y virtualenv python3-dev python3-libgpiod liblmdb-dev libffi-dev build-essential libncurses-dev libncurses-dev libncurses-dev stm32flash libnewlib-arm-none-eabi gcc-arm-none-eabi binutils-arm-none-eabi libusb-1.0-0 pkg-config libstdc++-arm-none-eabi-newlib nginx python-setuptools python3-setuptools npm pwmset python3-pip
+apt install -y virtualenv python3-dev python3-libgpiod liblmdb-dev libffi-dev build-essential libncurses-dev libncurses-dev libncurses-dev stm32flash libnewlib-arm-none-eabi gcc-arm-none-eabi binutils-arm-none-eabi libusb-1.0-0 pkg-config libstdc++-arm-none-eabi-newlib nginx python-setuptools python3-setuptools npm pwmset python3-pip gpiod
 ```
 
 ```shell
@@ -189,18 +176,27 @@ git clone https://github.com/th33xitus/kiauh.git --depth=1
 ./kiauh/kiauh.sh
 ```
 
-If setting it up, but not going to use it don't forget to disable the systemd services if you don't want them to run, and make sure not to boot into graphical mode.
-
-```shell
-systemctl disable klipper moonraker mainsail fluidd KlipperScreen prettygcode
-systemctl set-default multi-user.target # boot to CLI not graphical (graphical.target)
-systemctl|grep running
-```
-
 ### Webcam
 
 Webcam Settings
 
-- Stream URL: `http://192.168.0.12:8002/stream?extra_headers=1`
-- Snapshot URL: `http://192.168.0.12:8002/snapshot`
+- Stream URL: `http://rockpi/webcam/?action=stream`
+- Snapshot URL: `http://rockpi/snapshot`
 - Path to FFMPEG: `/usr/bin/ffmpeg`
+
+## Backups
+
+- Whole OS: Borgmatic + Borgbase
+- Local: linux-timemachine
+
+```shell
+su - octo
+mkdir /home/octo/timemachine
+chmod 0700 /home/octo/timemachine
+git clone https://github.com/cytopia/linux-timemachine.git --depth=1
+cd linux-timemachine
+sudo make install
+sudo echo "0 9 * * * /usr/local/bin/timemachine -v /home/octo/printer_data/config /home/octo/timemachine" >> /var/spool/cron/crontabs/octo
+timemachine -v /home/octo/printer_data/config /home/octo/timemachine
+tree -aL 1 /home/octo/timemachine
+```
