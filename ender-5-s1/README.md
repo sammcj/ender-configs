@@ -4,6 +4,25 @@ My Documentation, Configuration, Scripts and notes for the Ender 5 S1 3d Printer
 
 # Sam's Ender 5 S1 Setup
 
+- [Ender 5 S1](#ender-5-s1)
+- [Sam's Ender 5 S1 Setup](#sams-ender-5-s1-setup)
+  - [Hardware](#hardware)
+    - [Upgrades](#upgrades)
+  - [Firmware](#firmware)
+  - [Feedrate calibration](#feedrate-calibration)
+    - [Creality Sprite (Stock)](#creality-sprite-stock)
+  - [Shrinkage Calibration](#shrinkage-calibration)
+    - [2023-03-23](#2023-03-23)
+  - [Resonance Testing](#resonance-testing)
+    - [2023-03-22](#2023-03-22)
+      - [Test 1](#test-1)
+      - [Test 2](#test-2)
+    - [2023-03-21](#2023-03-21)
+    - [2023-03-15](#2023-03-15)
+  - [Notes / Links](#notes--links)
+    - [Controller board](#controller-board)
+    - [Variant](#variant)
+
 ## Hardware
 
 - Ender 5 S1
@@ -19,7 +38,152 @@ My Documentation, Configuration, Scripts and notes for the Ender 5 S1 3d Printer
 
 ### Creality Sprite (Stock)
 
+## Shrinkage Calibration
+
+### 2023-03-23
+
+[YACS2mini](https://www.thingiverse.com/thing:5332053)
+
+- X=79.8
+- Y=39.9
+
+- S=(78.8-39.9)2.5=97.25% - shrinkage %
+  - Take inverse of this one and scale models by this amount
+  - Prusaslicer: Advanced Settings -> Scale -> XY Size Compensation
+  - Cura: Horizontal Expansion
+- E=(97.25-(1.25*79.8))/2=-1.25mm - horizontal expansion mm
+  - Use this number directly in slicer
+
+Length AC = 112.6
+Length BD = 112.7
+Length AD = 79.8
+
+[A/X/Y/Z](https://www.thingiverse.com/thing:2972743)
+
+XY AC = 69.7
+XY BD = 70.2
+XY AD = 50.2
+
+Very confusing to get the other two Axis, gave up.
+
+[cube skew](https://www.thingiverse.com/thing:5031020)
+
+> Step 1: Measure diagonals AC, BD and AD of each cube side.
+> For the XY plane, measure he diagonals when looking at the Z face.
+> For the XZ plane, measure he diagonals when looking at the X face.
+> For the YZ plane, measure he diagonals when looking at the Y face.
+>
+> Step 2: In configuration.h there are 3 options mentioned:
+>
+>      insert the lengths of diagonals for XY, XZ and YZ planes directly in configuration.h and Marlin will calculate the skew >      factors (parameters XY_DIAG_AC, XY_DIAG_BD, XY_SIDE_AD, XZ_DIAG_AC, XZ_DIAG_BD, YZ_DIAG_AC, YZ_DIAG_BD, YZ_SIDE_AD)
+>      calculate the skew factors for the 3 planes by hand and insert the values in configuration.h (parameters XY_SKEW_FACTOR, >      XZ_SKEW_FACTOR, YZ_SKEW_FACTOR)
+>      calculate the skew factors for the 3 planes by hand and activate SKEW_CORRECTION_GCODE. This way, the skew factors can be >      set via M852 g-code command via serial interface.
+
+XY AC 38.2
+XY BD 38.2
+XY AD 30
+
+XZ AC 38.4
+XZ BD 38.2
+XZ AD 30
+
+YZ AC 38.2
+YZ BD 38.2
+YZ AD 30
+
+SET_SKEW XY=38.2,38.2,30 XZ=38.4,38.2,30 YZ=38.2,38.2,30
+
 ## Resonance Testing
+
+### 2023-03-22
+
+Updated from 4x squash ball feet to 6x - no other changes.
+
+#### Test 1
+
+- X - Recommended shaper is ei @ 29.0 Hz (max_accel = 1500 mm/sec^2)
+- Y - Recommended shaper is zv @ 55.8 Hz (max_accel = 12100 mm/sec^2)
+
+![](calibration/2023-03-22/resonances_x_20230322.png)
+![](calibration/2023-03-22/resonances_y_20230322.png)
+
+```plain
+~/klipper/scripts/calibrate_shaper.py resonances_x_20230322_134238.csv -o resonances_x_20230322_134238.png
+Fitted shaper 'zv' frequency = 33.2 Hz (vibrations = 30.5%, smoothing ~= 0.140)
+To avoid too much smoothing with 'zv', suggested max_accel <= 4100 mm/sec^2
+Fitted shaper 'mzv' frequency = 23.0 Hz (vibrations = 13.6%, smoothing ~= 0.385)
+To avoid too much smoothing with 'mzv', suggested max_accel <= 1500 mm/sec^2
+Fitted shaper 'ei' frequency = 29.0 Hz (vibrations = 11.3%, smoothing ~= 0.383)
+To avoid too much smoothing with 'ei', suggested max_accel <= 1500 mm/sec^2
+Fitted shaper '2hump_ei' frequency = 39.0 Hz (vibrations = 11.6%, smoothing ~= 0.355)
+To avoid too much smoothing with '2hump_ei', suggested max_accel <= 1500 mm/sec^2
+Fitted shaper '3hump_ei' frequency = 48.0 Hz (vibrations = 11.3%, smoothing ~= 0.356)
+To avoid too much smoothing with '3hump_ei', suggested max_accel <= 1500 mm/sec^2
+Recommended shaper is ei @ 29.0 Hz
+```
+
+```plain
+~/klipper/scripts/calibrate_shaper.py resonances_y_20230322_134849.csv -o resonances_y_20230322.png
+Fitted shaper 'zv' frequency = 55.8 Hz (vibrations = 42.2%, smoothing ~= 0.056)
+To avoid too much smoothing with 'zv', suggested max_accel <= 12100 mm/sec^2
+Fitted shaper 'mzv' frequency = 33.4 Hz (vibrations = 22.1%, smoothing ~= 0.183)
+To avoid too much smoothing with 'mzv', suggested max_accel <= 3300 mm/sec^2
+Fitted shaper 'ei' frequency = 47.6 Hz (vibrations = 25.5%, smoothing ~= 0.142)
+To avoid too much smoothing with 'ei', suggested max_accel <= 4200 mm/sec^2
+Fitted shaper '2hump_ei' frequency = 39.4 Hz (vibrations = 11.7%, smoothing ~= 0.348)
+To avoid too much smoothing with '2hump_ei', suggested max_accel <= 1600 mm/sec^2
+Fitted shaper '3hump_ei' frequency = 48.0 Hz (vibrations = 11.2%, smoothing ~= 0.356)
+To avoid too much smoothing with '3hump_ei', suggested max_accel <= 1500 mm/sec^2
+Recommended shaper is zv @ 55.8 Hz
+```
+
+##### Combining yesterdays and today's data
+
+![](calibration/2023-03-22/resonances_x_20230321_22.png)
+![](calibration/2023-03-22/resonances_y_20230321_22.png)
+
+- X - Recommended shaper is zv @ 32.0 Hz (max_accel = 3800 mm/sec^2)
+- Y - Recommended shaper is zv @ 56.4 Hz (max_accel = 12400 mm/sec^2)
+
+#### Test 2
+
+Bed and Hotend at 50deg.
+
+![](calibration/2023-03-22_02/resonances_x_20230322_02.png)
+![](calibration/2023-03-22_02/resonances_y_20230322_02.png)
+
+- X - Recommended shaper is ei @ 61.8 Hz (max_accel = 7100 mm/sec^2)
+- Y - Recommended shaper is zv @ 71.0 Hz (max_accel = 19600 mm/sec^2)
+
+```plain
+ ~/klipper/scripts/calibrate_shaper.py resonances_x*.csv -o resonances_x_20230322_02.png
+Fitted shaper 'zv' frequency = 65.6 Hz (vibrations = 11.4%, smoothing ~= 0.042)
+To avoid too much smoothing with 'zv', suggested max_accel <= 16800 mm/sec^2
+Fitted shaper 'mzv' frequency = 43.8 Hz (vibrations = 2.5%, smoothing ~= 0.106)
+To avoid too much smoothing with 'mzv', suggested max_accel <= 5700 mm/sec^2
+Fitted shaper 'ei' frequency = 61.8 Hz (vibrations = 1.2%, smoothing ~= 0.084)
+To avoid too much smoothing with 'ei', suggested max_accel <= 7100 mm/sec^2
+Fitted shaper '2hump_ei' frequency = 55.0 Hz (vibrations = 0.0%, smoothing ~= 0.178)
+To avoid too much smoothing with '2hump_ei', suggested max_accel <= 3400 mm/sec^2
+Fitted shaper '3hump_ei' frequency = 58.6 Hz (vibrations = 0.0%, smoothing ~= 0.239)
+To avoid too much smoothing with '3hump_ei', suggested max_accel <= 2500 mm/sec^2
+Recommended shaper is ei @ 61.8 Hz
+```
+
+```plain
+~/klipper/scripts/calibrate_shaper.py resonances_y*.csv -o resonances_y_20230322_02.png
+Fitted shaper 'zv' frequency = 71.0 Hz (vibrations = 62.7%, smoothing ~= 0.037)
+To avoid too much smoothing with 'zv', suggested max_accel <= 19600 mm/sec^2
+Fitted shaper 'mzv' frequency = 64.4 Hz (vibrations = 57.1%, smoothing ~= 0.050)
+To avoid too much smoothing with 'mzv', suggested max_accel <= 12200 mm/sec^2
+Fitted shaper 'ei' frequency = 85.0 Hz (vibrations = 58.0%, smoothing ~= 0.045)
+To avoid too much smoothing with 'ei', suggested max_accel <= 13500 mm/sec^2
+Fitted shaper '2hump_ei' frequency = 55.2 Hz (vibrations = 52.2%, smoothing ~= 0.177)
+To avoid too much smoothing with '2hump_ei', suggested max_accel <= 3400 mm/sec^2
+Fitted shaper '3hump_ei' frequency = 67.2 Hz (vibrations = 51.7%, smoothing ~= 0.181)
+To avoid too much smoothing with '3hump_ei', suggested max_accel <= 3300 mm/sec^2
+Recommended shaper is zv @ 71.0 Hz
+```
 
 ### 2023-03-21
 
@@ -71,10 +235,10 @@ shaper_type_y = mzv
 shaper_freq_y = 31.0
 ```
 
-![](images/resonances_x_20230321.png)
-![](images/calibrate_shaper_x_20230321_165958.png)
-![](images/resonances_y_20230321.png)
-![](images/calibrate_shaper_y_20230321_165958.png)
+![](calibration/2023-03-21/resonances_x_20230321.png)
+![](calibration/2023-03-21/calibrate_shaper_x_20230321_165958.png)
+![](calibration/2023-03-21/resonances_y_20230321.png)
+![](calibration/2023-03-21/calibrate_shaper_y_20230321_165958.png)
 
 ```plain
 Shaper calibration data written to /tmp/calibration_data_y_20230321_165958.csv file
@@ -144,7 +308,7 @@ Recommended shaper is zv @ 32.6 Hz
 
 ### 2023-03-15
 
-![](images/resonances_x_20230315.png)
+![](calibration/2023-03-15/resonances_x_20230315.png)
 
 ```plain
 /usr/share/klipper/scripts/calibrate_shaper.py resonances_x_*.csv -o resonances_x.png
@@ -162,7 +326,7 @@ To avoid too much smoothing with '3hump_ei', suggested max_accel <= 2800 mm/sec^
 Recommended shaper is 2hump_ei @ 67.4 Hz
 ```
 
-![](images/resonances_y_20230315.png)
+![](calibration/2023-03-15/resonances_y_20230315.png)
 
 ```plain
 /usr/share/klipper/scripts/calibrate_shaper.py resonances_y_*.csv -o resonances_y.png

@@ -2,6 +2,21 @@
 
 My Documentation, Configuration, Scripts and notes for my Ender 5 S1 and Ender 3 v2 Neo printers.
 
+- [Sam's Ender Configs](#sams-ender-configs)
+  - [Ender 5 S1](#ender-5-s1)
+  - [Ender 3 v2 Neo](#ender-3-v2-neo)
+  - [Creality Sonic Pad](#creality-sonic-pad)
+  - [RockPi 4 SE](#rockpi-4-se)
+    - [Connectivity](#connectivity)
+    - [Formatting SD Cards](#formatting-sd-cards)
+  - [Software](#software)
+    - [Prusa Slicer](#prusa-slicer)
+    - [Material Settings](#material-settings)
+    - [GCode scripts](#gcode-scripts)
+  - [Failed print recovery](#failed-print-recovery)
+  - [Links](#links)
+  - [Author](#author)
+
 ## Ender 5 S1
 
 My new printer, mods are a work in progress.
