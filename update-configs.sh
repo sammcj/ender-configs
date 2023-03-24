@@ -6,7 +6,7 @@ SSH_USER=${SSH_USER:-octo}
 SSH_HOST=${SSH_HOST:-rockpi.local}
 LOCAL_PATH=${LOCAL_PATH:-klipper}
 EXCLUDES=(
-  octoprinteverywhere.conf
+  octoeverywhere.*
   *.git
   *.github
   *.DS_Store
@@ -73,8 +73,7 @@ if [[ $(git status --porcelain | grep "$LOCAL_PATH" | wc -l) -gt 0 ]]; then
   read -p "Commit and push changes to git? [y/N] " -n 1 -r
   echo
   if [[ $REPLY =~ ^[Yy]$ ]]; then
-    # first check the files for any potential secrets
-    checkSecrets
+    checksecrets
     git add klipper/
     git commit -m "Update Klipper configs"
     git push

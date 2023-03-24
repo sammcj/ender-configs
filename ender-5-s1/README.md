@@ -14,6 +14,7 @@ My Documentation, Configuration, Scripts and notes for the Ender 5 S1 3d Printer
   - [Shrinkage Calibration](#shrinkage-calibration)
     - [2023-03-23](#2023-03-23)
   - [Resonance Testing](#resonance-testing)
+    - [2023-03-24](#2023-03-24)
     - [2023-03-22](#2023-03-22)
       - [Test 1](#test-1)
       - [Test 2](#test-2)
@@ -94,6 +95,38 @@ YZ AD 30
 SET_SKEW XY=38.2,38.2,30 XZ=38.4,38.2,30 YZ=38.2,38.2,30
 
 ## Resonance Testing
+
+### 2023-03-24
+
+Added enclosure.
+
+```plain
+Fitted shaper 'zv' frequency = 23.2 Hz (vibrations = 58.3%, smoothing ~= 0.286)
+To avoid too much smoothing with 'zv', suggested max_accel <= 1800 mm/sec^2
+Fitted shaper 'mzv' frequency = 25.4 Hz (vibrations = 54.2%, smoothing ~= 0.316)
+To avoid too much smoothing with 'mzv', suggested max_accel <= 1800 mm/sec^2
+Fitted shaper 'ei' frequency = 31.8 Hz (vibrations = 54.1%, smoothing ~= 0.319)
+To avoid too much smoothing with 'ei', suggested max_accel <= 1900 mm/sec^2
+Fitted shaper '2hump_ei' frequency = 43.4 Hz (vibrations = 54.2%, smoothing ~= 0.286)
+To avoid too much smoothing with '2hump_ei', suggested max_accel <= 2000 mm/sec^2
+Fitted shaper '3hump_ei' frequency = 53.2 Hz (vibrations = 53.3%, smoothing ~= 0.290)
+To avoid too much smoothing with '3hump_ei', suggested max_accel <= 2000 mm/sec^2
+Recommended shaper is zv @ 23.2 Hz
+```
+
+```plain
+Fitted shaper 'zv' frequency = 45.4 Hz (vibrations = 23.8%, smoothing ~= 0.080)
+To avoid too much smoothing with 'zv', suggested max_accel <= 8000 mm/sec^2
+Fitted shaper 'mzv' frequency = 41.0 Hz (vibrations = 4.4%, smoothing ~= 0.121)
+To avoid too much smoothing with 'mzv', suggested max_accel <= 5000 mm/sec^2
+Fitted shaper 'ei' frequency = 52.6 Hz (vibrations = 7.6%, smoothing ~= 0.116)
+To avoid too much smoothing with 'ei', suggested max_accel <= 5200 mm/sec^2
+Fitted shaper '2hump_ei' frequency = 54.2 Hz (vibrations = 0.1%, smoothing ~= 0.184)
+To avoid too much smoothing with '2hump_ei', suggested max_accel <= 3300 mm/sec^2
+Fitted shaper '3hump_ei' frequency = 63.4 Hz (vibrations = 0.0%, smoothing ~= 0.204)
+To avoid too much smoothing with '3hump_ei', suggested max_accel <= 2900 mm/sec^2
+Recommended shaper is 2hump_ei @ 54.2 Hz
+```
 
 ### 2023-03-22
 
