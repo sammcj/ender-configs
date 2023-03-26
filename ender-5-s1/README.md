@@ -39,6 +39,9 @@ My Documentation, Configuration, Scripts and notes for the Ender 5 S1 3d Printer
 
 ### Creality Sprite (Stock)
 
+- The large heatsink used on the 2023 Ender 5 S1 is exactly the same as on the 2022 Ender 3 V2 Neo with one exception - it comes with a bi-metal heatbreak.
+-
+
 ## Shrinkage Calibration
 
 ### 2023-03-23
