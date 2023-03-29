@@ -2,41 +2,47 @@
 
 # This script syncs files from the rockpi Klipper host to my local machine / this git repo for version control.
 
-SSH_USER=${SSH_USER:-octo}
-SSH_HOST=${SSH_HOST:-rockpi.local}
-LOCAL_PATH=${LOCAL_PATH:-klipper}
-EXCLUDES=(
-  octoeverywhere.*
-  *.git
-  *.github
-  *.DS_Store
-  *.backup
-  printer-20*
-  *.theme
-  *.bkp
-  *.tmp
-)
-
-# Create the rsync exclude string.
-EXCLUDE_STRING=""
-for EXCLUDE in "${EXCLUDES[@]}"; do
-  EXCLUDE_STRING="${EXCLUDE_STRING} --exclude=${EXCLUDE}"
-done
-
 DEBUG=${DEBUG:-false}
 if [[ $DEBUG == true ]]; then
   set -x
 fi
 
-# shellcheck disable=SC2086
-echo "Files on remote host not in ${LOCAL_PATH}:"
-if [[ $(rsync -avz --progress --dry-run $EXCLUDE_STRING $EXCLUDE_STRING "${SSH_USER}@${SSH_HOST}":/home/octo/printer_data/config/ "${LOCAL_PATH}/" | wc -l) -gt 4 ]]; then
-  echo "Do you want to sync these files from remote host to local machine?"
-  read -p "Sync files from remote host? [y/N] " -n 1 -r
+SSH_USER=${SSH_USER:-octo}
+SSH_HOST=${SSH_HOST:-rockpi.local}
+LOCAL_PATH=${LOCAL_PATH:-klipper}
+PRINTER_CONFIG_PATH=${PRINTER_CONFIG_PATH:-/home/octo/printer_data/config}
+
+# Files to exclude from rsync.
+EXCLUDES=(
+  octoeverywhere.cfg
+  zippy-klipper_config
+  jschuh-klipper-macros
+  .git
+  .github
+  .DS_Store
+  .backup
+  printer-20*
+  .theme
+  .bkp
+  .tmp
+)
+
+# Create the rsync exclude string.
+for EXCLUDE in "${EXCLUDES[@]}"; do
+  EXCLUDE_STRING="${EXCLUDE_STRING} --exclude=${EXCLUDE}"
+done
+
+# Setup rsync command strings
+DRY_RUN_FLAG="--dry-run"
+LOCAL_TO_REMOTE=$(rsync -avz "$EXCLUDE_STRING" "$LOCAL_PATH/" "${SSH_USER}@${SSH_HOST}":"${PRINTER_CONFIG_PATH}/" "$DRY_RUN_FLAG")
+REMOTE_TO_LOCAL=$(rsync -avz "$EXCLUDE_STRING" "${SSH_USER}@${SSH_HOST}":"$PRINTER_CONFIG_PATH" "${LOCAL_PATH}/" "$DRY_RUN_FLAG")
+
+if [[ $($REMOTE_TO_LOCAL | wc -l) -gt 4 ]]; then
+  read -p "Do you want to sync these files from remote host to local machine? [y/N] " -n 1 -r
   echo
   if [[ $REPLY =~ ^[Yy]$ ]]; then
-    # shellcheck disable=SC2086
-    rsync -avz --progress $EXCLUDE_STRING "${SSH_USER}@${SSH_HOST}":/home/octo/printer_data/config/ "${LOCAL_PATH}/"
+    DRY_RUN_FLAG=''
+    $REMOTE_TO_LOCAL
 
     # Offer to commit and push any changes to git, default to no.
     if [[ $(git status --porcelain | grep "$LOCAL_PATH" | wc -l) -gt 0 ]]; then
@@ -51,22 +57,14 @@ if [[ $(rsync -avz --progress --dry-run $EXCLUDE_STRING $EXCLUDE_STRING "${SSH_U
       fi
     fi
   fi
-
 fi
 
-# List any files in "${LOCAL_PATH}/" that are not on the remote host.
-echo "Files in ${LOCAL_PATH} not on remote host:"
-# shellcheck disable=SC2086
-rsync -avz --progress --dry-run $EXCLUDE_STRING "${LOCAL_PATH}/" "${SSH_USER}@${SSH_HOST}":/home/octo/printer_data/config/
-
-# Only prompt if there are files not on the remote host.
-# shellcheck disable=SC2086
-if [[ $(rsync -avz --progress --dry-run $EXCLUDE_STRING "${LOCAL_PATH}/" "${SSH_USER}@${SSH_HOST}":/home/octo/printer_data/config/ | wc -l) -gt 4 ]]; then
-  # Offer to rsync the files to the remote host, default to no.
-  read -p "Sync files to remote host? [y/N] " -n 1 -r
+DRY_RUN_FLAG="--dry-run"
+if [[ $($LOCAL_TO_REMOTE | wc -l) -gt 4 ]]; then
+  read -p "Do you want to sync these files from local machine to remote host? [y/N] " -n 1 -r
   echo
   if [[ $REPLY =~ ^[Yy]$ ]]; then
-    # shellcheck disable=SC2086
-    rsync -avz --progress $EXCLUDE_STRING "${LOCAL_PATH}/" "${SSH_USER}@${SSH_HOST}":/home/octo/printer_data/config/
+    DRY_RUN_FLAG=""
+    $LOCAL_TO_REMOTE
   fi
 fi

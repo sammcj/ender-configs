@@ -7,19 +7,21 @@ My Documentation, Configuration, Scripts and notes for the Ender 5 S1 3d Printer
 - [Ender 5 S1](#ender-5-s1)
 - [Sam's Ender 5 S1 Setup](#sams-ender-5-s1-setup)
   - [Hardware](#hardware)
-    - [Upgrades](#upgrades)
   - [Firmware](#firmware)
   - [Feedrate calibration](#feedrate-calibration)
     - [Creality Sprite (Stock)](#creality-sprite-stock)
-  - [Shrinkage Calibration](#shrinkage-calibration)
-    - [2023-03-23](#2023-03-23)
   - [Resonance Testing](#resonance-testing)
+    - [2023-03-29](#2023-03-29)
+    - [2023-03-28](#2023-03-28)
+    - [2023-03-27](#2023-03-27)
     - [2023-03-24](#2023-03-24)
     - [2023-03-22](#2023-03-22)
       - [Test 1](#test-1)
       - [Test 2](#test-2)
     - [2023-03-21](#2023-03-21)
     - [2023-03-15](#2023-03-15)
+  - [Shrinkage Calibration](#shrinkage-calibration)
+    - [2023-03-23](#2023-03-23)
   - [Notes / Links](#notes--links)
     - [Controller board](#controller-board)
     - [Variant](#variant)
@@ -27,77 +29,137 @@ My Documentation, Configuration, Scripts and notes for the Ender 5 S1 3d Printer
 ## Hardware
 
 - Ender 5 S1
-
-### Upgrades
-
-- ADXL345 accelerometer
-- Klipper
+- Creality Sprite Extruder
+- Micro Swiss all metal hotend
+- 60W heating element
+- 2x KUSBA ADXL345 USB accelerometers
 
 ## Firmware
+
+- Klipper
 
 ## Feedrate calibration
 
 ### Creality Sprite (Stock)
 
 - The large heatsink used on the 2023 Ender 5 S1 is exactly the same as on the 2022 Ender 3 V2 Neo with one exception - it comes with a bi-metal heatbreak.
--
-
-## Shrinkage Calibration
-
-### 2023-03-23
-
-[YACS2mini](https://www.thingiverse.com/thing:5332053)
-
-- X=79.8
-- Y=39.9
-
-- S=(78.8-39.9)2.5=97.25% - shrinkage %
-  - Take inverse of this one and scale models by this amount
-  - Prusaslicer: Advanced Settings -> Scale -> XY Size Compensation
-  - Cura: Horizontal Expansion
-- E=(97.25-(1.25*79.8))/2=-1.25mm - horizontal expansion mm
-  - Use this number directly in slicer
-
-Length AC = 112.6
-Length BD = 112.7
-Length AD = 79.8
-
-[A/X/Y/Z](https://www.thingiverse.com/thing:2972743)
-
-XY AC = 69.7
-XY BD = 70.2
-XY AD = 50.2
-
-Very confusing to get the other two Axis, gave up.
-
-[cube skew](https://www.thingiverse.com/thing:5031020)
-
-> Step 1: Measure diagonals AC, BD and AD of each cube side.
-> For the XY plane, measure he diagonals when looking at the Z face.
-> For the XZ plane, measure he diagonals when looking at the X face.
-> For the YZ plane, measure he diagonals when looking at the Y face.
->
-> Step 2: In configuration.h there are 3 options mentioned:
->
->      insert the lengths of diagonals for XY, XZ and YZ planes directly in configuration.h and Marlin will calculate the skew >      factors (parameters XY_DIAG_AC, XY_DIAG_BD, XY_SIDE_AD, XZ_DIAG_AC, XZ_DIAG_BD, YZ_DIAG_AC, YZ_DIAG_BD, YZ_SIDE_AD)
->      calculate the skew factors for the 3 planes by hand and insert the values in configuration.h (parameters XY_SKEW_FACTOR, >      XZ_SKEW_FACTOR, YZ_SKEW_FACTOR)
->      calculate the skew factors for the 3 planes by hand and activate SKEW_CORRECTION_GCODE. This way, the skew factors can be >      set via M852 g-code command via serial interface.
-
-XY AC 38.2
-XY BD 38.2
-XY AD 30
-
-XZ AC 38.4
-XZ BD 38.2
-XZ AD 30
-
-YZ AC 38.2
-YZ BD 38.2
-YZ AD 30
-
-SET_SKEW XY=38.2,38.2,30 XZ=38.4,38.2,30 YZ=38.2,38.2,30
 
 ## Resonance Testing
+
+```plain
+MEASURE_AXES_NOISE # (0~100 and < 1000)
+TEST_RESONANCES AXIS=X
+MEASURE_AXES_NOISE # (0~100 and < 1000)
+TEST_RESONANCES AXIS=Y
+mkdir -p ~/calibration/$(date +%Y%m%d) && mv /tmp/resonances_*$(date +%Y%m%d)* ~/calibration/$(date +%Y%m%d)
+
+cd  ~/calibration/$(date +%Y%m%d)
+~/klipper/scripts/calibrate_shaper.py resonances_x*.csv -o resonances_x_$(date +%Y%m%d).png
+~/klipper/scripts/calibrate_shaper.py resonances_y*.csv -o resonances_y_$(date +%Y%m%d).png
+```
+
+### 2023-03-29
+
+- Reseated enclosure to reduced rattling
+
+- X: Recommended shaper is mzv @ 65.6 Hz - suggested max_accel <= 12700 mm/sec^2
+- Y: Recommended shaper is 3hump_ei @ 65.8 Hz - suggested max_accel <= 3200 mm/sec^2
+
+```plain
+Fitted shaper 'zv' frequency = 69.0 Hz (vibrations = 2.2%, smoothing ~= 0.039)
+To avoid too much smoothing with 'zv', suggested max_accel <= 18600 mm/sec^2
+Fitted shaper 'mzv' frequency = 65.6 Hz (vibrations = 0.2%, smoothing ~= 0.048)
+To avoid too much smoothing with 'mzv', suggested max_accel <= 12700 mm/sec^2
+Fitted shaper 'ei' frequency = 73.2 Hz (vibrations = 0.0%, smoothing ~= 0.060)
+To avoid too much smoothing with 'ei', suggested max_accel <= 10000 mm/sec^2
+Fitted shaper '2hump_ei' frequency = 94.8 Hz (vibrations = 0.0%, smoothing ~= 0.061)
+To avoid too much smoothing with '2hump_ei', suggested max_accel <= 10000 mm/sec^2
+Fitted shaper '3hump_ei' frequency = 117.6 Hz (vibrations = 0.0%, smoothing ~= 0.060)
+To avoid too much smoothing with '3hump_ei', suggested max_accel <= 10100 mm/sec^2
+Recommended shaper is mzv @ 65.6 Hz
+```
+
+```plain
+Fitted shaper 'zv' frequency = 34.4 Hz (vibrations = 27.8%, smoothing ~= 0.132)
+To avoid too much smoothing with 'zv', suggested max_accel <= 4500 mm/sec^2
+Fitted shaper 'mzv' frequency = 24.0 Hz (vibrations = 9.7%, smoothing ~= 0.354)
+To avoid too much smoothing with 'mzv', suggested max_accel <= 1600 mm/sec^2
+Fitted shaper 'ei' frequency = 31.8 Hz (vibrations = 8.6%, smoothing ~= 0.319)
+To avoid too much smoothing with 'ei', suggested max_accel <= 1900 mm/sec^2
+Fitted shaper '2hump_ei' frequency = 39.0 Hz (vibrations = 6.6%, smoothing ~= 0.355)
+To avoid too much smoothing with '2hump_ei', suggested max_accel <= 1500 mm/sec^2
+Fitted shaper '3hump_ei' frequency = 65.8 Hz (vibrations = 4.1%, smoothing ~= 0.189)
+To avoid too much smoothing with '3hump_ei', suggested max_accel <= 3200 mm/sec^2
+Recommended shaper is 3hump_ei @ 65.8 Hz
+```
+
+
+### 2023-03-28
+
+- 2x KUSBA USB ADXL345 installed (one on bed)
+
+- X: Recommended shaper is mzv @ 65.8 Hz, suggested max_accel <= 12800 mm/sec^2
+- Y: Recommended shaper is 3hump_ei @ 62.6 Hz, suggested max_accel <= 2900 mm/sec^2
+
+```plain
+Fitted shaper 'zv' frequency = 69.2 Hz (vibrations = 2.0%, smoothing ~= 0.039)
+To avoid too much smoothing with 'zv', suggested max_accel <= 18700 mm/sec^2
+Fitted shaper 'mzv' frequency = 65.8 Hz (vibrations = 0.3%, smoothing ~= 0.048)
+To avoid too much smoothing with 'mzv', suggested max_accel <= 12800 mm/sec^2
+Fitted shaper 'ei' frequency = 72.8 Hz (vibrations = 0.0%, smoothing ~= 0.061)
+To avoid too much smoothing with 'ei', suggested max_accel <= 9900 mm/sec^2
+Fitted shaper '2hump_ei' frequency = 94.2 Hz (vibrations = 0.0%, smoothing ~= 0.062)
+To avoid too much smoothing with '2hump_ei', suggested max_accel <= 9900 mm/sec^2
+Fitted shaper '3hump_ei' frequency = 116.8 Hz (vibrations = 0.0%, smoothing ~= 0.061)
+To avoid too much smoothing with '3hump_ei', suggested max_accel <= 10000 mm/sec^2
+Recommended shaper is mzv @ 65.8 Hz
+```
+
+```plain
+Fitted shaper 'zv' frequency = 33.2 Hz (vibrations = 23.5%, smoothing ~= 0.140)
+To avoid too much smoothing with 'zv', suggested max_accel <= 4100 mm/sec^2
+Fitted shaper 'mzv' frequency = 26.0 Hz (vibrations = 9.2%, smoothing ~= 0.301)
+To avoid too much smoothing with 'mzv', suggested max_accel <= 2000 mm/sec^2
+Fitted shaper 'ei' frequency = 34.2 Hz (vibrations = 8.3%, smoothing ~= 0.275)
+To avoid too much smoothing with 'ei', suggested max_accel <= 2200 mm/sec^2
+Fitted shaper '2hump_ei' frequency = 39.0 Hz (vibrations = 4.3%, smoothing ~= 0.355)
+To avoid too much smoothing with '2hump_ei', suggested max_accel <= 1500 mm/sec^2
+Fitted shaper '3hump_ei' frequency = 62.6 Hz (vibrations = 4.6%, smoothing ~= 0.209)
+To avoid too much smoothing with '3hump_ei', suggested max_accel <= 2900 mm/sec^2
+Recommended shaper is 3hump_ei @ 62.6 Hz
+```
+
+### 2023-03-27
+
+- 1x KUSBA USB ADXL345 installed
+
+```plain
+Fitted shaper 'zv' frequency = 69.6 Hz (vibrations = 1.7%, smoothing ~= 0.038)
+To avoid too much smoothing with 'zv', suggested max_accel <= 18900 mm/sec^2
+Fitted shaper 'mzv' frequency = 66.0 Hz (vibrations = 0.4%, smoothing ~= 0.048)
+To avoid too much smoothing with 'mzv', suggested max_accel <= 12800 mm/sec^2
+Fitted shaper 'ei' frequency = 69.6 Hz (vibrations = 0.0%, smoothing ~= 0.066)
+To avoid too much smoothing with 'ei', suggested max_accel <= 9000 mm/sec^2
+Fitted shaper '2hump_ei' frequency = 89.6 Hz (vibrations = 0.0%, smoothing ~= 0.067)
+To avoid too much smoothing with '2hump_ei', suggested max_accel <= 8900 mm/sec^2
+Fitted shaper '3hump_ei' frequency = 110.8 Hz (vibrations = 0.0%, smoothing ~= 0.067)
+To avoid too much smoothing with '3hump_ei', suggested max_accel <= 9000 mm/sec^2
+Recommended shaper is zv @ 69.6 Hz
+```
+
+```plain
+Fitted shaper 'zv' frequency = 60.2 Hz (vibrations = 34.2%, smoothing ~= 0.049)
+To avoid too much smoothing with 'zv', suggested max_accel <= 14100 mm/sec^2
+Fitted shaper 'mzv' frequency = 36.4 Hz (vibrations = 9.3%, smoothing ~= 0.154)
+To avoid too much smoothing with 'mzv', suggested max_accel <= 3900 mm/sec^2
+Fitted shaper 'ei' frequency = 49.4 Hz (vibrations = 10.7%, smoothing ~= 0.132)
+To avoid too much smoothing with 'ei', suggested max_accel <= 4500 mm/sec^2
+Fitted shaper '2hump_ei' frequency = 44.4 Hz (vibrations = 2.6%, smoothing ~= 0.274)
+To avoid too much smoothing with '2hump_ei', suggested max_accel <= 2100 mm/sec^2
+Fitted shaper '3hump_ei' frequency = 52.6 Hz (vibrations = 0.6%, smoothing ~= 0.296)
+To avoid too much smoothing with '3hump_ei', suggested max_accel <= 1900 mm/sec^2
+Recommended shaper is 3hump_ei @ 52.6 Hz
+```
 
 ### 2023-03-24
 
@@ -379,6 +441,61 @@ Fitted shaper '3hump_ei' frequency = 105.4 Hz (vibrations = 0.0%, smoothing ~= 0
 To avoid too much smoothing with '3hump_ei', suggested max_accel <= 8100 mm/sec^2
 Recommended shaper is mzv @ 59.2 Hz
 ```
+
+## Shrinkage Calibration
+
+### 2023-03-23
+
+[YACS2mini](https://www.thingiverse.com/thing:5332053)
+
+- X=79.8
+- Y=39.9
+
+- S=(78.8-39.9)2.5=97.25% - shrinkage %
+  - Take inverse of this one and scale models by this amount
+  - Prusaslicer: Advanced Settings -> Scale -> XY Size Compensation
+  - Cura: Horizontal Expansion
+- E=(97.25-(1.25*79.8))/2=-1.25mm - horizontal expansion mm
+  - Use this number directly in slicer
+
+Length AC = 112.6
+Length BD = 112.7
+Length AD = 79.8
+
+[A/X/Y/Z](https://www.thingiverse.com/thing:2972743)
+
+XY AC = 69.7
+XY BD = 70.2
+XY AD = 50.2
+
+Very confusing to get the other two Axis, gave up.
+
+[cube skew](https://www.thingiverse.com/thing:5031020)
+
+> Step 1: Measure diagonals AC, BD and AD of each cube side.
+> For the XY plane, measure he diagonals when looking at the Z face.
+> For the XZ plane, measure he diagonals when looking at the X face.
+> For the YZ plane, measure he diagonals when looking at the Y face.
+>
+> Step 2: In configuration.h there are 3 options mentioned:
+>
+>      insert the lengths of diagonals for XY, XZ and YZ planes directly in configuration.h and Marlin will calculate the skew >      factors (parameters XY_DIAG_AC, XY_DIAG_BD, XY_SIDE_AD, XZ_DIAG_AC, XZ_DIAG_BD, YZ_DIAG_AC, YZ_DIAG_BD, YZ_SIDE_AD)
+>      calculate the skew factors for the 3 planes by hand and insert the values in configuration.h (parameters XY_SKEW_FACTOR, >      XZ_SKEW_FACTOR, YZ_SKEW_FACTOR)
+>      calculate the skew factors for the 3 planes by hand and activate SKEW_CORRECTION_GCODE. This way, the skew factors can be >      set via M852 g-code command via serial interface.
+
+XY AC 38.2
+XY BD 38.2
+XY AD 30
+
+XZ AC 38.4
+XZ BD 38.2
+XZ AD 30
+
+YZ AC 38.2
+YZ BD 38.2
+YZ AD 30
+
+SET_SKEW XY=38.2,38.2,30 XZ=38.4,38.2,30 YZ=38.2,38.2,30
 
 ## Notes / Links
 
