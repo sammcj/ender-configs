@@ -10,8 +10,10 @@ My Documentation, Configuration, Scripts and notes for the Ender 5 S1 3d Printer
   - [Firmware](#firmware)
   - [Feedrate calibration](#feedrate-calibration)
     - [Creality Sprite (Stock)](#creality-sprite-stock)
-  - [Resonance Testing](#resonance-testing)
+  - [Pressure Advance](#pressure-advance)
     - [2023-03-29](#2023-03-29)
+  - [Resonance Testing](#resonance-testing)
+    - [2023-03-29](#2023-03-29-1)
     - [2023-03-28](#2023-03-28)
     - [2023-03-27](#2023-03-27)
     - [2023-03-24](#2023-03-24)
@@ -43,6 +45,19 @@ My Documentation, Configuration, Scripts and notes for the Ender 5 S1 3d Printer
 ### Creality Sprite (Stock)
 
 - The large heatsink used on the 2023 Ender 5 S1 is exactly the same as on the 2022 Ender 3 V2 Neo with one exception - it comes with a bi-metal heatbreak.
+
+## Pressure Advance
+
+### 2023-03-29
+
+- 0.6mm nozzle
+- 0.44mm layer height
+
+Corners look best about 8.4mm
+
+> pressure_advance = <start> + <measured_height> * <factor>
+
+PA = 0 + 8.4 * 0.005 == 0.042
 
 ## Resonance Testing
 
@@ -92,7 +107,6 @@ Fitted shaper '3hump_ei' frequency = 65.8 Hz (vibrations = 4.1%, smoothing ~= 0.
 To avoid too much smoothing with '3hump_ei', suggested max_accel <= 3200 mm/sec^2
 Recommended shaper is 3hump_ei @ 65.8 Hz
 ```
-
 
 ### 2023-03-28
 
