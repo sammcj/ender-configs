@@ -10,26 +10,58 @@ curl -L --output radxa.deb "https://github.com/radxa-pkg/radxa-archive-keyring/r
 sudo dpkg -i radxa.deb
 rm -f radxa.deb
 source /etc/os-release
-sudo tee /etc/apt/sources.list.d/radxa.list <<< "deb [signed-by=/usr/share/keyrings/radxa-archive-keyring.gpg] https://radxa-repo.github.io/bullseye/ $VERSION_CODENAME main"
+sudo tee /etc/apt/sources.list.d/radxa.list <<< "deb [signed-by=/usr/share/keyrings/radxa-archive-keyring.gpg] https://radxa-repo.github.io/bullseye/ ${VERSION_CODENAME} main"
 sudo apt update
 
 apt install -y setserial irqtop borgmatic borgbackup firmware-brcm80211 hwinfo jq lshw usbutils v4l-utils zstd libzstd1 python3-zstd socat fzf aria2 nullmailer build-essential zlib1g-dev libncurses5-dev libgdbm-dev libnss3-dev libssl-dev libreadline-dev libffi-dev gpiod virtualenv python3-dev python3-libgpiod liblmdb-d wget uvcdynctrl
 
 systemctl disable bluetooth.service vnstat.service console-getty.service wpa_supplicant.service
 systemctl enable nullmailer
+systemctl disable sysstat
 
 usermod -a -G tty octo
 usermod -a -G dialout octo
 
-touch $HOME/.hushlogin
-gpiodetect
-```                                          1
+touch "${HOME}/.hushlogin"
+```
+
+### Optional
+
+Packages from <https://github.com/sammcj/packages/tree/main/debian/rockpi>
+
+```shell
+# node
+curl -fsSL https://fnm.vercel.app/install | bash
+fnm install v18 && fnm default v18
+```
+
+Other things to automate / document:
+
+- rsyslog
+- logrotate
+- cron
 
 ### Nullmailer
 
 ```plain
 smtp.fastmail.com smtp --port=587 --starttls --user=user@fastmail.com --pass=password
 ```
+
+### GPIO things
+
+`gpiodetect`
+
+#### MRAA
+
+<https://wiki.radxa.com/Mraa#Install_example:_Install_Mraa_on_ROCK_Pi_4B_Debian11_armhf_system>
+
+```shell
+apt-get install git build-essential swig4.0 python-dev cmake libnode-dev python3-dev pkg-config tree libc6 libjson-c5 libjson-c-dev libgtest-dev libgcc1 libstdc++6 python python2.7 libpython2.7 python3.9 libpython3.9 libgtest-dev pkg-config cmake-data
+
+git clone -b master https://github.com/radxa/mraa.git --depth=1
+```
+
+Lost the rest of the steps to the sands of time.
 
 ## Klipper
 
@@ -178,6 +210,8 @@ git clone https://github.com/th33xitus/kiauh.git --depth=1
 
 ### Webcam
 
+NOTE: Now using kiauh's provided webcam plugin rather than ustreamer directly.
+
 Webcam Settings
 
 - Stream URL: `http://rockpi/webcam/?action=stream`
@@ -186,8 +220,8 @@ Webcam Settings
 
 ## Backups
 
-- Whole OS: Borgmatic + Borgbase
-- Local: linux-timemachine
+- Whole OS: Borgmatic for Borg backup to local network + Borgbase
+- Local versioning: linux-timemachine of /home/octo
 
 ```shell
 su - octo
