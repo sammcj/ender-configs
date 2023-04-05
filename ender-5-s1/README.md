@@ -13,6 +13,7 @@ My Documentation, Configuration, Scripts and notes for the Ender 5 S1 3d Printer
   - [Pressure Advance](#pressure-advance)
     - [2023-03-29](#2023-03-29)
   - [Resonance Testing](#resonance-testing)
+    - [2023-04-04](#2023-04-04)
     - [2023-03-29](#2023-03-29-1)
     - [2023-03-28](#2023-03-28)
     - [2023-03-27](#2023-03-27)
@@ -66,11 +67,52 @@ MEASURE_AXES_NOISE # (0~100 and < 1000)
 TEST_RESONANCES AXIS=X
 MEASURE_AXES_NOISE # (0~100 and < 1000)
 TEST_RESONANCES AXIS=Y
-mkdir -p ~/calibration/$(date +%Y%m%d) && mv /tmp/resonances_*$(date +%Y%m%d)* ~/calibration/$(date +%Y%m%d)
-
+mkdir -p ~/calibration/$(date +%Y%m%d)
 cd  ~/calibration/$(date +%Y%m%d)
+cp /tmp/resonances_*$(date +%Y%m%d)* ~/calibration/$(date +%Y%m%d)
+
 ~/klipper/scripts/calibrate_shaper.py resonances_x*.csv -o resonances_x_$(date +%Y%m%d).png
 ~/klipper/scripts/calibrate_shaper.py resonances_y*.csv -o resonances_y_$(date +%Y%m%d).png
+```
+
+### 2023-04-04
+
+- New cooling setup mounted, wheels adjusted (still not quite right), single ADXL on extruder
+
+![](calibration/2023-04-04/resonances_x_20230404.png)
+![](calibration/2023-04-04/resonances_x_20230404.png)
+
+- X: Recommended shaper is mzv @ 67.0 Hz, max_accel <= 13200 mm/sec^2
+- Y: Recommended shaper is mzv @ 42.8 Hz, max_accel <= 5400 mm/sec^2
+
+```plain
+rockpi:20230404:% ~/klipper/scripts/calibrate_shaper.py resonances_x*.csv -o resonances_x_$(date +%Y%m%d).png
+Fitted shaper 'zv' frequency = 69.4 Hz (vibrations = 1.9%, smoothing ~= 0.039)
+To avoid too much smoothing with 'zv', suggested max_accel <= 18800 mm/sec^2
+Fitted shaper 'mzv' frequency = 67.0 Hz (vibrations = 0.0%, smoothing ~= 0.046)
+To avoid too much smoothing with 'mzv', suggested max_accel <= 13200 mm/sec^2
+Fitted shaper 'ei' frequency = 80.6 Hz (vibrations = 0.0%, smoothing ~= 0.050)
+To avoid too much smoothing with 'ei', suggested max_accel <= 12100 mm/sec^2
+Fitted shaper '2hump_ei' frequency = 104.0 Hz (vibrations = 0.0%, smoothing ~= 0.052)
+To avoid too much smoothing with '2hump_ei', suggested max_accel <= 12000 mm/sec^2
+Fitted shaper '3hump_ei' frequency = 125.4 Hz (vibrations = 0.0%, smoothing ~= 0.054)
+To avoid too much smoothing with '3hump_ei', suggested max_accel <= 11500 mm/sec^2
+Recommended shaper is mzv @ 67.0 Hz
+```
+
+```plain
+rockpi:20230404:% ~/klipper/scripts/calibrate_shaper.py resonances_y*.csv -o resonances_y_$(date +%Y%m%d).png
+Fitted shaper 'zv' frequency = 48.4 Hz (vibrations = 10.6%, smoothing ~= 0.072)
+To avoid too much smoothing with 'zv', suggested max_accel <= 9100 mm/sec^2
+Fitted shaper 'mzv' frequency = 42.8 Hz (vibrations = 0.1%, smoothing ~= 0.111)
+To avoid too much smoothing with 'mzv', suggested max_accel <= 5400 mm/sec^2
+Fitted shaper 'ei' frequency = 51.0 Hz (vibrations = 0.0%, smoothing ~= 0.124)
+To avoid too much smoothing with 'ei', suggested max_accel <= 4800 mm/sec^2
+Fitted shaper '2hump_ei' frequency = 63.6 Hz (vibrations = 0.0%, smoothing ~= 0.133)
+To avoid too much smoothing with '2hump_ei', suggested max_accel <= 4500 mm/sec^2
+Fitted shaper '3hump_ei' frequency = 76.6 Hz (vibrations = 0.0%, smoothing ~= 0.140)
+To avoid too much smoothing with '3hump_ei', suggested max_accel <= 4300 mm/sec^2
+Recommended shaper is mzv @ 42.8 Hz
 ```
 
 ### 2023-03-29
