@@ -1,0 +1,9 @@
+[Match]
+Property=ID_MODEL=cannette_gs_usb ID_SERIAL_SHORT="004400205841500C20373233"
+
+[Link]
+# from systemd.link manpage:
+# Note that specifying a name that the kernel might use for another interface (for example "eth0") is dangerous because the name assignment done by udev will race with the assignment done by the kernel, and only one
+#   interface may use the name. Depending on the order of operations, either udev or the kernel will win, making the naming unpredictable. It is best to use some different prefix
+
+Name=u2c
