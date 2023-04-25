@@ -13,6 +13,7 @@ My Documentation, Configuration, Scripts and notes for the Ender 5 S1 3d Printer
   - [Pressure Advance](#pressure-advance)
     - [2023-03-29](#2023-03-29)
   - [Resonance Testing](#resonance-testing)
+    - [2023-04-25](#2023-04-25)
     - [20-23-04-10](#20-23-04-10)
     - [2023-04-07](#2023-04-07)
   - [Skew Calibration](#skew-calibration)
@@ -66,6 +67,45 @@ cp /tmp/resonances_*$(date +%Y%m%d)* ~/calibration/$(date +%Y%m%d)
 
 ~/klipper/scripts/calibrate_shaper.py resonances_x*.csv -o resonances_x_$(date +%Y%m%d).png
 ~/klipper/scripts/calibrate_shaper.py resonances_y*.csv -o resonances_y_$(date +%Y%m%d).png
+```
+
+### 2023-04-25
+
+![](calibration/2023-04-25/resonances_x_20230425.png)
+![](calibration/2023-04-25/resonances_y_20230425.png)
+
+- Replaced hot end cabling and board with BTT EBB36 CAN bus.
+- Replaced squash ball feed with printed flexi-feet (TBC if this is better during printing).
+
+- X: Recommended shaper is mzv @ 75.0 Hz
+- Y: Recommended shaper is mzv @ 41.6 Hz
+
+```plain
+Fitted shaper 'zv' frequency = 78.8 Hz (vibrations = 6.3%, smoothing ~= 0.031)
+To avoid too much smoothing with 'zv', suggested max_accel <= 24200 mm/sec^2
+Fitted shaper 'mzv' frequency = 75.0 Hz (vibrations = 1.2%, smoothing ~= 0.038)
+To avoid too much smoothing with 'mzv', suggested max_accel <= 16600 mm/sec^2
+Fitted shaper 'ei' frequency = 68.6 Hz (vibrations = 0.0%, smoothing ~= 0.068)
+To avoid too much smoothing with 'ei', suggested max_accel <= 8800 mm/sec^2
+Fitted shaper '2hump_ei' frequency = 83.6 Hz (vibrations = 0.0%, smoothing ~= 0.077)
+To avoid too much smoothing with '2hump_ei', suggested max_accel <= 7800 mm/sec^2
+Fitted shaper '3hump_ei' frequency = 105.0 Hz (vibrations = 0.0%, smoothing ~= 0.074)
+To avoid too much smoothing with '3hump_ei', suggested max_accel <= 8100 mm/sec^2
+Recommended shaper is mzv @ 75.0 Hz
+```
+
+```plain
+Fitted shaper 'zv' frequency = 60.6 Hz (vibrations = 19.6%, smoothing ~= 0.049)
+To avoid too much smoothing with 'zv', suggested max_accel <= 14300 mm/sec^2
+Fitted shaper 'mzv' frequency = 41.6 Hz (vibrations = 1.3%, smoothing ~= 0.118)
+To avoid too much smoothing with 'mzv', suggested max_accel <= 5100 mm/sec^2
+Fitted shaper 'ei' frequency = 55.8 Hz (vibrations = 1.7%, smoothing ~= 0.103)
+To avoid too much smoothing with 'ei', suggested max_accel <= 5800 mm/sec^2
+Fitted shaper '2hump_ei' frequency = 60.8 Hz (vibrations = 0.0%, smoothing ~= 0.146)
+To avoid too much smoothing with '2hump_ei', suggested max_accel <= 4100 mm/sec^2
+Fitted shaper '3hump_ei' frequency = 74.4 Hz (vibrations = 0.0%, smoothing ~= 0.148)
+To avoid too much smoothing with '3hump_ei', suggested max_accel <= 4100 mm/sec^2
+Recommended shaper is mzv @ 41.6 Hz
 ```
 
 ### 20-23-04-10
