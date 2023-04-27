@@ -30,8 +30,8 @@ M107
 M106 S255 ; turn fan on full
 M140 S70 ; start preheating the bed
 M104 S210  T0 ; start preheating hotend
-M190 S70 ; heat bed TODO: Set this to the correct temperature
-M109 S210  T0 ; heat hotend TODO: Set this to the correct temperature
+M190 S70 ; heat bed - Set this to the correct temperature!!
+M109 S210  T0 ; heat hotend - Set this to the correct temperature!!
 ;*** End Preheating ***
 ;--------------------------------------------
 ;
@@ -41,6 +41,6 @@ G29 L0; Load the mesh from slot 0
 G21 ; set units to millimeters
 G90 ; use absolute coordinates
 M83 ; use relative distances for extrusion
-M107 ; Filament gcode TODO: Update this if the failed GCODE has a different fFilament gcode
+M107 ; Filament gcode - Update this if the failed GCODE has a different fFilament gcode!!
 ;
-; TODO: Add the rest of the GCODE below
+; Add the rest of the GCODE below !!
