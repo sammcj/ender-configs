@@ -19,7 +19,7 @@ My Documentation, Configuration, Scripts and notes for my Ender 5 S1 and Ender 3
 
 ## Ender 5 S1
 
-My new printer, mods are a work in progress.
+My current printer.
 
 - [ender-5-s1](ender-5-s1/README.md)
 
