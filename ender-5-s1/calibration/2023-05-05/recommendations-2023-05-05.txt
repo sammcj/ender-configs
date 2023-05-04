@@ -1,0 +1,14 @@
+# Added rigidity mount to extruder brackets
+
+/home/octo/calibration/2023-05-05/resonances_x_20230505_074041.log
+ - Recommended shaper is zv @ 68.4 Hz
+
+/home/octo/calibration/2023-05-05/resonances_x_20230505_074041.log
+ - To avoid too much smoothing with 'zv', suggested max_accel <= 18200 mm/sec^2
+
+/home/octo/calibration/2023-05-05/resonances_y_20230505_074257.log
+ - Recommended shaper is mzv @ 40.8 Hz
+
+/home/octo/calibration/2023-05-05/resonances_y_20230505_074257.log
+ - To avoid too much smoothing with 'mzv', suggested max_accel <= 4900 mm/sec^2
+
