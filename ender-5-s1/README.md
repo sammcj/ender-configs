@@ -34,6 +34,16 @@ My Documentation, Configuration, Scripts and notes for the Ender 5 S1 3d Printer
 ## Firmware
 
 - Klipper
+- Stock creality board
+  - STM32F401
+  - 64Kb bootloader
+  - USART1 PA10/PA9
+  - baud: 500000
+- EBB36
+  - STM32G0B1
+  - 8Kb bootloader
+  - CAN bus on PB0/PB1
+  - baud: 1000000
 
 ## Feedrate calibration
 

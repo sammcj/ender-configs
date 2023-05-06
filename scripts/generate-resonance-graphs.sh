@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+# This script can be used to trigger, move and summarise resonance graph generation from the csv files
+
 # Set date variable
 DATE=$(date +%Y-%m-%d)
 PYTHON_BIN=$HOME/klippy-env/bin/python3
