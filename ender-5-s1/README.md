@@ -26,12 +26,17 @@ My Documentation, Configuration, Scripts and notes for the Ender 5 S1 3d Printer
 
 - Ender 5 S1
 - Creality Sprite Extruder
+- BTT Octopus Controller
+- BTT EBB36 CAN bus tool
+  - ADXL345 USB accelerometers
+- BTT U2C USB CAN bus
 - Mellow NF Smart Hotend
   - 60W heating element
   - PT1000 sensor
-- 2x KUSBA ADXL345 USB accelerometers
 
 ## Firmware
+
+**The below sections are OUTDATED - just installed a BTT Octopus**
 
 - Klipper
 - Stock creality board
