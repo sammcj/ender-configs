@@ -39,7 +39,7 @@ Used for running Klipper, Mainsail etc...
 
 ### Connectivity
 
-- Klipper/Mainsail/Fluidd running on a RockPi 4 SE
+- Klipper/Mainsail running on a RockPi 4 SE
 - Webcam connected to RockPi with ustreamer
 - Printer connected via USB
   - I did try removing the USB 5v pin as per <https://community.octoprint.org/t/put-tape-on-the-5v-pin-why-and-how/13574> but it caused the printer to not be detected, I ended up getting an adapter that removes the 5v pin cleanly.
