@@ -17,11 +17,25 @@ bitrate 1000000
 up ifconfig $IFACE txqueuelen 1024
 ```
 
-## Notes
+## BTT Octopus
+
+- Serial: 380034000E50315939343520
+
+### Flashing BTT Octopus
+
+```shell
+systemctl stop klipper klipper-mcu
+cd klipper
+make menuconfig
+# BTT Octopus, STM32F446, 32KiB, 12MHz, 1000000
+make clean
+make
+make flash
+```
 
 ### EBB36
 
-- ID: 44bd831d1781
+- UUID: 44bd831d1781
 - Firmware: Canboot (stock), then Klipper (stock)
 
 ### U2C
@@ -30,7 +44,7 @@ up ifconfig $IFACE txqueuelen 1024
 - Firmware: Canboot (stock), then BTT firmware fork of candleLight_fw
   - Tried other forks which loaded - but didn't detect the EBB36
 
-### BIGTREETECH
+### EBB36 + U2C
 
 11 / 11
 
@@ -53,6 +67,18 @@ not be reported, which is normal.
 Good tutorial: <https://maz0r.github.io/klipper_canbus/toolhead/ebb36-42_v1.1.html>
 
 > "V1.2 compared with v1.1: only the IO of hotend is changed from PA2 to PB13"
+
+### Flashing EBB36
+
+```shell
+systemctl stop klipper klipper-mcu
+cd klipper
+make menuconfig
+# select STM32G0B1,8k, 8mhz, CAN BUS PB0, PB1, 1000000
+make clean
+make
+python3 /home/octo/CanBoot/scripts/flash_can.py -i can0 -f /home/octo/klipper/out/klipper.bin -u 44bd831d1781
+```
 
 ```dmesg
 [Tue Apr 18 08:32:22 2023] usb 1-1.1: new full-speed USB device number 4 using ehci-platform
@@ -190,4 +216,30 @@ can't get device qualifier: Resource temporarily unavailable
 can't get debug descriptor: Resource temporarily unavailable
 Device Status:     0x0000
   (Bus Powered)
+```
+
+```shell
+rockpi:klipper:# python3 /home/octo/CanBoot/scripts/flash_can.py -i can0 -f /home/octo/klipper/out/klipper.bin -u 44bd831d1781                     <master ✗>
+Sending bootloader jump command...
+Resetting all bootloader node IDs...
+Checking for canboot nodes...
+Detected UUID: 44bd831d1781, Application: CanBoot
+Attempting to connect to bootloader
+CanBoot Connected
+Protocol Version: 1.0.0
+Block Size: 64 bytes
+Application Start: 0x8002000
+MCU type: stm32g0b1xx
+Verifying canbus connection
+Flashing '/home/octo/klipper/out/klipper.bin'...
+
+[##################################################]
+
+Write complete: 14 pages
+Verifying (block count = 434)...
+
+[##################################################]
+
+Verification Complete: SHA = D09EA8976E28EBA0E64EB4BDC0DA9C83AB92F034
+CAN Flash Success
 ```
