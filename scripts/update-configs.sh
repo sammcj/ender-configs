@@ -17,7 +17,7 @@ EXCLUDES=(
   octoeverywhere.cfg
   zippy-klipper_config
   jschuh-klipper-macros
-  .git
+  .git/**
   .github
   .DS_Store
   .backup
@@ -27,17 +27,36 @@ EXCLUDES=(
   .tmp
 )
 
+# Fix the excludes so they work with rsync.
+for i in "${!EXCLUDES[@]}"; do
+  EXCLUDES[$i]="${EXCLUDES[$i]//\*/\*}"
+  EXCLUDES[$i]="${EXCLUDES[$i]//\~\//}"
+done
+
 # Create the rsync exclude string.
 for EXCLUDE in "${EXCLUDES[@]}"; do
   EXCLUDE_STRING="${EXCLUDE_STRING} --exclude=${EXCLUDE}"
 done
 
+# Strip the leading space off the exclude string.
+EXCLUDE_STRING=$(echo "$EXCLUDE_STRING" | sed -e 's/^[[:space:]]*//')
+
+# if ./ is found in the path, strip it off.
+
 # Setup rsync command strings
 DRY_RUN_FLAG="--dry-run"
-LOCAL_TO_REMOTE=$(rsync -avz "$EXCLUDE_STRING" "$LOCAL_PATH/" "${SSH_USER}@${SSH_HOST}":"${PRINTER_CONFIG_PATH}/" "$DRY_RUN_FLAG")
-REMOTE_TO_LOCAL=$(rsync -avz "$EXCLUDE_STRING" "${SSH_USER}@${SSH_HOST}":"$PRINTER_CONFIG_PATH" "${LOCAL_PATH}/" "$DRY_RUN_FLAG")
+set -x
+LOCAL_TO_REMOTE="$(rsync -avz "${EXCLUDE_STRING}" "${LOCAL_PATH}"/ "${SSH_USER}"@"${SSH_HOST}":"${PRINTER_CONFIG_PATH}"/ $DRY_RUN_FLAG)"
+REMOTE_TO_LOCAL="$(rsync -avz "${EXCLUDE_STRING}" "${SSH_USER}"@"${SSH_HOST}":"${PRINTER_CONFIG_PATH}" "${LOCAL_PATH}"/ $DRY_RUN_FLAG)"
 
-if [[ $($REMOTE_TO_LOCAL | wc -l) -gt 4 ]]; then
+# echo out the command to run and wait for user input.
+echo Running command: "$LOCAL_TO_REMOTE"
+echo "Running command: $REMOTE_TO_LOCAL"
+
+# strip any leading whitespace
+NUM_ITEMS=$(echo "$LOCAL_TO_REMOTE" | wc -l | sed -e 's/^[[:space:]]*//')
+
+if [[ $NUM_ITEMS -gt 4 ]]; then
   read -p "Do you want to sync these files from remote host to local machine? [y/N] " -n 1 -r
   echo
   if [[ $REPLY =~ ^[Yy]$ ]]; then
@@ -59,12 +78,12 @@ if [[ $($REMOTE_TO_LOCAL | wc -l) -gt 4 ]]; then
   fi
 fi
 
-DRY_RUN_FLAG="--dry-run"
-if [[ $($LOCAL_TO_REMOTE | wc -l) -gt 4 ]]; then
-  read -p "Do you want to sync these files from local machine to remote host? [y/N] " -n 1 -r
-  echo
-  if [[ $REPLY =~ ^[Yy]$ ]]; then
-    DRY_RUN_FLAG=""
-    $LOCAL_TO_REMOTE
-  fi
-fi
+# DRY_RUN_FLAG="--dry-run"
+# if [[ $($LOCAL_TO_REMOTE | wc -l) -gt 4 ]]; then
+#   read -p "Do you want to sync these files from local machine to remote host? [y/N] " -n 1 -r
+#   echo
+#   if [[ $REPLY =~ ^[Yy]$ ]]; then
+#     DRY_RUN_FLAG=""
+#     $LOCAL_TO_REMOTE
+#   fi
+# fi

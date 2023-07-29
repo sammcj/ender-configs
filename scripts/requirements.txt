@@ -1,0 +1,4 @@
+numpy
+adxl345
+smbus
+gpiod
