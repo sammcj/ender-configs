@@ -36,6 +36,8 @@ See [klipper](../klipper/) for config files.
   - 32KiB bootloader
   - 12MHz clock
   - baud: 1000000
+  - Communication interface (USB to CAN bus bridge (USB on PA11/PA12)
+    -     CAN bus interface (CAN bus (on PB8/PB9))
 - BTT EBB36
   - Canboot
   - Klipper
