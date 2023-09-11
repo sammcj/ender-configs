@@ -21,7 +21,13 @@ up ifconfig $IFACE txqueuelen 1024
 
 - Serial: 380034000E50315939343520
 
-### Flashing BTT Octopus
+## Flashing
+
+- BTT Octopus -> usb -> RockPi (/dev/serial/by-path/usb-Klipper_stm32f446xx_380034000E50315939343520-if00)
+- BTT U2C -> usb -> RockPi (can0 network interface)
+- BTT EBB36 -> CANBUS -> U2C -> usb -> RockPi (python3 /home/octo/CanBoot/scripts/flash_can.py -i can0 -f /home/octo/klipper/out/klipper.bin -u 44bd831d1781)
+
+### BTT Octopus
 
 ```shell
 systemctl stop klipper klipper-mcu
