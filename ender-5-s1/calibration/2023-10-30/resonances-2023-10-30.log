@@ -1,0 +1,35 @@
+Fitted shaper 'zv' frequency = 68.8 Hz (vibrations = 11.6%, smoothing ~= 0.039)
+To avoid too much smoothing with 'zv', suggested max_accel <= 18400 mm/sec^2
+Fitted shaper 'mzv' frequency = 59.6 Hz (vibrations = 1.4%, smoothing ~= 0.057)
+To avoid too much smoothing with 'mzv', suggested max_accel <= 10500 mm/sec^2
+Fitted shaper 'ei' frequency = 69.6 Hz (vibrations = 0.0%, smoothing ~= 0.066)
+To avoid too much smoothing with 'ei', suggested max_accel <= 9000 mm/sec^2
+Fitted shaper '2hump_ei' frequency = 86.8 Hz (vibrations = 0.0%, smoothing ~= 0.072)
+To avoid too much smoothing with '2hump_ei', suggested max_accel <= 8400 mm/sec^2
+Fitted shaper '3hump_ei' frequency = 103.8 Hz (vibrations = 0.0%, smoothing ~= 0.076)
+To avoid too much smoothing with '3hump_ei', suggested max_accel <= 7900 mm/sec^2
+Recommended shaper is ei @ 69.6 Hz
+Fitted shaper 'zv' frequency = 49.8 Hz (vibrations = 15.4%, smoothing ~= 0.068)
+To avoid too much smoothing with 'zv', suggested max_accel <= 9700 mm/sec^2
+Fitted shaper 'mzv' frequency = 40.6 Hz (vibrations = 0.7%, smoothing ~= 0.124)
+To avoid too much smoothing with 'mzv', suggested max_accel <= 4900 mm/sec^2
+Fitted shaper 'ei' frequency = 48.4 Hz (vibrations = 0.6%, smoothing ~= 0.138)
+To avoid too much smoothing with 'ei', suggested max_accel <= 4400 mm/sec^2
+Fitted shaper '2hump_ei' frequency = 43.6 Hz (vibrations = 0.1%, smoothing ~= 0.284)
+To avoid too much smoothing with '2hump_ei', suggested max_accel <= 2000 mm/sec^2
+Fitted shaper '3hump_ei' frequency = 48.0 Hz (vibrations = 0.0%, smoothing ~= 0.356)
+To avoid too much smoothing with '3hump_ei', suggested max_accel <= 1500 mm/sec^2
+Recommended shaper is mzv @ 40.6 Hz
+/home/octo/calibration/2023-10-30/resonances_*.log 
+ -  
+
+/home/octo/calibration/2023-10-30/resonances_*.log 
+ -  
+
+total 336
+drwxr-xr-x  2 octo octo   4096 Oct 30 13:01 .
+drwxr-xr-x 22 octo octo   4096 Oct 30 13:00 ..
+-rw-r--r--  1 octo octo   1794 Oct 30 13:01 resonances-2023-10-30.log
+-rw-r--r--  1 octo octo 160089 Oct 30 13:00 resonances_x_20231030_125615-2023-10-30.png
+-rw-r--r--  1 octo octo 165631 Oct 30 13:01 resonances_y_20231030_125831-2023-10-30.png
+This output was generated from generate-resonance-graphs.sh - https://github.com/sammcj/ender-configs/blob/main/scripts/generate-resonance-graphs.sh 
