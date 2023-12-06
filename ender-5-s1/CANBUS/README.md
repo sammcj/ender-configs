@@ -23,9 +23,20 @@ up ifconfig $IFACE txqueuelen 1024
 
 ## Flashing
 
-- BTT Octopus -> usb -> RockPi (/dev/serial/by-path/usb-Klipper_stm32f446xx_380034000E50315939343520-if00)
+- BTT Octopus -> usb -> RockPi
 - BTT U2C -> usb -> RockPi (can0 network interface)
-- BTT EBB36 -> CANBUS -> U2C -> usb -> RockPi (python3 /home/octo/CanBoot/scripts/flash_can.py -i can0 -f /home/octo/klipper/out/klipper.bin -u 44bd831d1781)
+- BTT EBB36 -> CANBUS -> U2C -> usb -> RockPi
+
+### Flashing Order
+
+1. Update klipper
+3. Make build for EBB36
+4. Flash via USB (jumper, then press and hold boot while pressing reset, then remove jumper)
+  - `python3 /home/octo/CanBoot/scripts/flash_can.py -i can0 -f /home/octo/klipper/out/klipper.bin -u 44bd831d1781` 
+5. Make build for BTT Octopus
+6. Flash via USB (no jumper required)
+  - `FLASH_DEVICE=/dev/serial/by-id/usb-Klipper_stm32f446xx_380034000E50315939343520-if00 make flash`
+7. Power cycle everything
 
 ### BTT Octopus
 
@@ -33,7 +44,7 @@ up ifconfig $IFACE txqueuelen 1024
 systemctl stop klipper klipper-mcu
 cd klipper
 make menuconfig
-# BTT Octopus, STM32F446, 32KiB, 12MHz, 1000000
+# BTT Octopus, STM32F446, 32KiB, 12MHz, 1000000, Communication interface (USB (on PA11/PA12))
 make clean
 make
 make flash
@@ -75,6 +86,9 @@ Good tutorial: <https://maz0r.github.io/klipper_canbus/toolhead/ebb36-42_v1.1.ht
 > "V1.2 compared with v1.1: only the IO of hotend is changed from PA2 to PB13"
 
 ### Flashing EBB36
+
+Easiest to flash via USB (jumper, then press and hold boot while pressing reset)
+
 
 ```shell
 systemctl stop klipper klipper-mcu
