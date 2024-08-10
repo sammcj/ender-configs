@@ -263,3 +263,14 @@ Verifying (block count = 434)...
 Verification Complete: SHA = D09EA8976E28EBA0E64EB4BDC0DA9C83AB92F034
 CAN Flash Success
 ```
+
+## missing /dev/serial
+
+`vi /usr/lib/udev/rules.d/60-serial.rules`
+
+```plain
+SUBSYSTEMS=="usb", ENV{ID_BUS}="usb"
+ENV{ID_USB_INTERFACE_NUM}=="", GOTO="serial_end"
+ENV{.ID_PORT}=="", SYMLINK+="serial/by-id/$env{ID_BUS}-$env{ID_USB_SERIAL}-if$env{ID_USB_INTERFACE_NUM}"
+ENV{.ID_PORT}=="?*", SYMLINK+="serial/by-id/$env{ID_BUS}-$env{ID_USB_SERIAL}-if$env{ID_USB_INTERFACE_NUM}-port$env{.ID_PORT}"
+```
